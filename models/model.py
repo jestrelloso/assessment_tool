@@ -1,8 +1,11 @@
-from sqlalchemy import Column, String, Boolean, ARRAY, DateTime
-from sqlalchemy.dialects.postgresql import UUID, INTEGER
-from sqlalchemy.sql import func
-from db.database import Base
 import uuid
+
+from sqlalchemy import ARRAY, Boolean, Column, DateTime, String
+from sqlalchemy.dialects.postgresql import INTEGER, UUID
+from sqlalchemy.sql import func
+from sqlalchemy.sql.schema import ForeignKey
+
+from db.database import Base
 
 
 class User(Base):
@@ -24,3 +27,26 @@ class User(Base):
     four_digit_code = Column(INTEGER, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+
+class Questions(Base):
+    __tablename__ = "questions"
+
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False
+    )
+
+    question_text = Column(String, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+
+class Choices(Base):
+    __tablename__ = "choices"
+
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False
+    )
+    choice_text = Column(String, index=True)
+    isCorrect = Column(Boolean, default=False)
+    question_id = Column(UUID, ForeignKey("questions.id", ondelete="CASCADE"))
