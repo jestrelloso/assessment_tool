@@ -19,12 +19,20 @@ class UserCreate(UserBase):
     pass
 
 
-class UserUpdate(UserBase):
-    pass
+class UserUpdate(BaseModel):
+    email_auth: Optional[bool]
+    exams: Optional[List[str]]
+    email: Optional[EmailStr]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    password: Optional[str]
+    phone_number: Optional[str]
+    profile_image: Optional[str]
+    four_digit_code: Optional[int]
 
 
 class UserInDB(UserBase):
-    client_id: UUID4
+    id: UUID4
     status: str = "Pending"
     user_type: str = "Examinee"
     created_at: datetime
@@ -35,7 +43,7 @@ class UserInDB(UserBase):
 
 
 class UserBaseWithoutPassword(BaseModel):
-    client_id: UUID4
+    id: UUID4
     email: EmailStr
     email_auth: bool = False
     exams: Optional[List[str]]
